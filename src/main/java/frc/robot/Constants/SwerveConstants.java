@@ -15,7 +15,7 @@ import frc.robot.subsystems.swerve.SwerveModuleIO;
 public final class SwerveConstants {
     
     public static final double driverControllerLeftDeadband = 0.1;
-    public static final double driverControllerRightDeadband = 0.4;
+    public static final double driverControllerRightDeadband = 0.95;
     public static final int CAN_PIGEON = 0;
 
     public static int driveMaxRPM = 5676;
@@ -49,7 +49,7 @@ public final class SwerveConstants {
 
     public static final MAX_SWERVE_GEARS GEAR_CONSTANTS = MAX_SWERVE_GEARS.FAST;
     public static final double MAX_LINEAR_VELOCITY_METERS_PER_SECOND = GEAR_CONSTANTS.maxSpeed; // 1678 ran 4.5 m/s in 2022
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 5.0; // from 1678
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 8.0; // from 1678
 
     public static final double DRIVE_GEAR_RATIO = GEAR_CONSTANTS.gearRatio;
     public static final double STEER_GEAR_RATIO = 46.2962962963;
@@ -104,5 +104,13 @@ public final class SwerveConstants {
     //public static final double AUTO_ROTATE_TOLERANCE = 0.05;
 
     public static final double MODULE_ROTATION_RATE_LIMIT = 10; // max allowed rotation rate of swerve in radians per second
+    
+    // New PID values for Anguler Velocity
+    public static final double AngV_P = 10;
+    public static final double AngV_I = 0;
+    public static final double AngV_D = 0;
+
+    // Determines how the swerve turns (True = Charged Up way, False = New(and better) way)
+    public static final boolean TurnWithRightStickX = false;
 
 }

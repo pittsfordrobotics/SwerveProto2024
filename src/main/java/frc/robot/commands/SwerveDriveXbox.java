@@ -44,20 +44,14 @@ public class SwerveDriveXbox extends CommandBase {
     rotateX = -driverController.getRightY();
     rotateY = -driverController.getRightX();
     double radius = MathUtil.applyDeadband(Math.sqrt(Math.pow(rotateX, 2) + Math.pow(rotateY, 2)), SwerveConstants.driverControllerRightDeadband);
-    if(radius == 0){ //If no input, replace current input with last values
-      rotateX = lastRotateX;
-      rotateY = lastRotateY;
-    }else{ //If there is an input, replace the stored values with the new ones
-      lastRotateX = rotateX;
-      lastRotateY = rotateY;
+    if(radius == 0){ //If in deadband, don't update the target direction
+      swerveDrive.updateSwerveModuleStates(xAxis, yAxis);
+    }else{
+      Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan2(rotateY, rotateX));
+      swerveDrive.updateSwerveModuleStates(xAxis, yAxis, targetAngle);
     }
 
-    swerveDrive.updateSwerveModuleStates(xAxis, yAxis, rotateX, rotateY); // get desired swerve module states and drive
     swerveDrive.drive();
-
-    if(driverController.x().getAsBoolean()) { // If X button is pressed, reset gyro heading
-      swerveDrive.zeroGyro();
-    }
     
   }
 
