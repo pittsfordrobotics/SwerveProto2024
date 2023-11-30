@@ -5,15 +5,22 @@
 package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.SwerveDriveXbox;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 
 public class Swerve extends SubsystemBase {
 
@@ -28,6 +35,8 @@ public class Swerve extends SubsystemBase {
   private ChassisSpeeds actualRobotRelativeChassisSpeeds;
   private ChassisSpeeds targetFieldRelativeSpeeds;
   private ChassisSpeeds targetRobotRelativeChassisSpeeds;
+
+  private final SwerveDrivePoseEstimator poseEstimator;
   // private final SwerveDrivePoseEstimator poseEstimator;
 
   // Initialize a PID controller for calculating the wanted angular velocity based on the desired angle
@@ -35,17 +44,21 @@ public class Swerve extends SubsystemBase {
 
   SwerveModuleState[] wantedModuleStates = new SwerveModuleState[4];
   private final SwerveDriveKinematics kinematics = SwerveConstants.DRIVE_KINEMATICS;
+  private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
 
 
   private Rotation2d robotRelativeAngle = new Rotation2d();
   private Rotation2d targetAngle = new Rotation2d();
   private WPI_Pigeon2 pigeon= new WPI_Pigeon2(SwerveConstants.CAN_PIGEON);
 
+
+  private final static Swerve INSTANCE = new Swerve();
+  public static Swerve getInstance() {
+    return INSTANCE;
+  }
+
   /** Creates a new Swerve Drive object with 4 modules specified by SwerveConstants */
-  public Swerve() {
-    this.setDefaultCommand(new SwerveDriveXbox(this)); // when no command scheduled
-    this.zeroGyro();
-    
+  public Swerve() {    
     moduleFL = new SwerveModuleIO(SwerveConstants.CAN_FL_DRIVE, SwerveConstants.CAN_FL_STEER, SwerveConstants.FL_OFFSET);
     moduleFR = new SwerveModuleIO(SwerveConstants.CAN_FR_DRIVE, SwerveConstants.CAN_FR_STEER, SwerveConstants.FR_OFFSET);
     moduleBL = new SwerveModuleIO(SwerveConstants.CAN_BL_DRIVE, SwerveConstants.CAN_BL_STEER, SwerveConstants.BL_OFFSET);
@@ -54,15 +67,26 @@ public class Swerve extends SubsystemBase {
     moduleIO = new SwerveModuleIO[]{moduleFL, moduleFR, moduleBL, moduleBR}; // initializes motors and encoders for all 4 swerve modules.
     for (int i = 0; i < 4; i++) {
       moduleIO[i].updateInputs();
+      modulePositions[i] = new SwerveModulePosition(moduleIO[i].drivePositionMeters, Rotation2d.fromRadians(moduleIO[i].steerOffsetAbsolutePositionRad));
       lastModuleStates[i] = new SwerveModuleState();
     }
-    // TODO: figure out what the pose estimator is used for.
-    // poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRobotRelativeAngle(), modulePositions, new Pose2d(), VecBuilder.fill(0.003, 0.003, 0.0002), VecBuilder.fill(0.9, 0.9, 0.9));
+    poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRobotRelativeAngle(), modulePositions, new Pose2d(), VecBuilder.fill(0.003, 0.003, 0.0002), VecBuilder.fill(0.9, 0.9, 0.9));
   }
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    for (int i = 0; i < 4; i++) {
+      moduleIO[i].updateInputs();
+      modulePositions[i] = new SwerveModulePosition(moduleIO[i].drivePositionMeters, Rotation2d.fromRadians(moduleIO[i].steerOffsetAbsolutePositionRad));
+    }
+    poseEstimator.update(getRobotRelativeAngle(), modulePositions);
+    SmartDashboard.putNumber("Robot X", getPose().getX());
+    SmartDashboard.putNumber("Robot Y", getPose().getY());
+    SmartDashboard.putNumber("Robot Heading", getPose().getRotation().getDegrees());
   }
+
    /**Gets the robot's current orientation. Returns the CCW+ angle in a Rotation2d object. */
   private Rotation2d getRobotRelativeAngle(){
     double robotRelativeAngleDeg = pigeon.getYaw();
@@ -78,15 +102,16 @@ public class Swerve extends SubsystemBase {
    * @param rotateX Rotation x-axis input (right stick left)
    * @param rotateY Rotation y-axis input (right stick up)
   */
-  public void updateSwerveModuleStates(double xAxis, double yAxis, Rotation2d targetAngleRad) {  
-    this.targetAngle = targetAngleRad;
+  public void updateSwerveModuleStates(double xAxis, double yAxis, Rotation2d TargetAngle) {  
+    this.targetAngle = TargetAngle;
     updateSwerveModuleStates(xAxis, yAxis);
   };
+
+
   public void updateSwerveModuleStates(double xAxis, double yAxis) {
     // Set X and Y speeds based on max motor RPM.
     double targetSpeedX = xAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
     double targetSpeedY = yAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
-
     SwerveModuleState[] actualStates = new SwerveModuleState[4];
     for (int i = 0; i < 4; i++) {
       moduleIO[i].updateInputs();
@@ -119,6 +144,7 @@ public class Swerve extends SubsystemBase {
     }
     
   };
+
   /** Used for testing alignment, stops all modules and points them forward */
   public void driveZeroOffset() {
     for (int i = 0; i < 4; i++) {
@@ -126,14 +152,35 @@ public class Swerve extends SubsystemBase {
       moduleIO[i].drive(wantedModuleStates[i], false);
     }
   }
+
   /** Drive all swerve modules */
   public void drive() {
     for (int i = 0; i < 4; i++) {
       moduleIO[i].drive(wantedModuleStates[i], false);
     }
   }
+
   /** Reset the pigeon angle */
   public void zeroGyro() {
     pigeon.setYaw(0);
+    // tells the pose the gyro was reset
+    Pose2d pose = new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d());
+    poseEstimator.resetPosition(getRobotRelativeAngle(), modulePositions, pose);
+
+  }
+
+  /** Reset the pose estimator, input is desired pose */
+  public void resetPose(Pose2d pose) {
+    poseEstimator.resetPosition(getRobotRelativeAngle(), modulePositions, pose);
+  }
+
+  /** Get the robot's current pose */
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+
+  // Adds vision data to the swerve pose estimator -- called in vision subsystem
+  public void addVisionData(Pose2d pose, double time, Matrix<N3, N1> vec) {
+    poseEstimator.addVisionMeasurement(pose, time, vec);
   }
 }

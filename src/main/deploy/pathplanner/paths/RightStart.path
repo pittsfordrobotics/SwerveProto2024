@@ -1,0 +1,113 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.802758381907114,
+        "y": 4.431168361445063
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6438772877545755,
+        "y": 4.73747347494695
+      },
+      "isLocked": false
+    },
+    {
+      "anchor": {
+        "x": 4.24061799823063,
+        "y": 4.620257240514482
+      },
+      "prevControl": {
+        "x": 3.839088179070813,
+        "y": 4.717975375127853
+      },
+      "nextControl": {
+        "x": 4.507103750671503,
+        "y": 4.555404048081473
+      },
+      "isLocked": false
+    },
+    {
+      "anchor": {
+        "x": 6.225484450968903,
+        "y": 4.620257240514482
+      },
+      "prevControl": {
+        "x": 5.691499382998766,
+        "y": 4.633281266562533
+      },
+      "nextControl": null,
+      "isLocked": false
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Arm_Out",
+      "waypointRelativePos": 1.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Arm_Out"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ArmIn",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Armin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0.0
+  }
+}
