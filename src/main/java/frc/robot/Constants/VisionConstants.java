@@ -13,6 +13,7 @@ public final class VisionConstants {
 
     public final static VisionIO LIMELIGHT1;
     public final static String LIMELIGHT1_NAME = "limelight1";
+    
     public final static VisionIO LIMELIGHT2;
     public final static String LIMELIGHT2_NAME = "limelight2";
     static {

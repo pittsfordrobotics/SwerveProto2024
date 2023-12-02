@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import java.nio.file.attribute.PosixFileAttributes;
+
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 
@@ -77,20 +79,23 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // Update the swerve module states
     for (int i = 0; i < 4; i++) {
       moduleIO[i].updateInputs();
       modulePositions[i] = new SwerveModulePosition(moduleIO[i].drivePositionMeters, Rotation2d.fromRadians(moduleIO[i].steerOffsetAbsolutePositionRad));
     }
+    
+    // Update the pose estimator
     poseEstimator.update(getRobotRelativeAngle(), modulePositions);
     SmartDashboard.putNumber("Robot X", getPose().getX());
     SmartDashboard.putNumber("Robot Y", getPose().getY());
     SmartDashboard.putNumber("Robot Heading", getPose().getRotation().getDegrees());
-  }
+   }
 
    /**Gets the robot's current orientation. Returns the CCW+ angle in a Rotation2d object. */
   private Rotation2d getRobotRelativeAngle(){
     double robotRelativeAngleDeg = pigeon.getYaw();
-    
     return Rotation2d.fromRadians(MathUtil.angleModulus(Math.toRadians(robotRelativeAngleDeg)));
   }
 

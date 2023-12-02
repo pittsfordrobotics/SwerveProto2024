@@ -22,7 +22,7 @@ public interface VisionIO {
      * RETRO: uses the green lights
      */
     enum Pipelines {
-        FAR_RANGE(0), MID_RANGE(1), CLOSE_RANGE(2), RETRO(3), CONE(4), CUBE(5);
+        Test(0), Led(1), LowLed(2), RETRO(3), CONE(4), CUBE(5);
 
         private final int num;
         Pipelines(int num) {
@@ -63,7 +63,7 @@ public interface VisionIO {
     }
 
     /** Updates the set of loggable inputs. */
-    default void updateInputs(VisionIOInputs inputs) {}
+    default void updateInputs(VisionIOInputs inputs, String CamName) {}
 
     /** Enabled or disabled vision LEDs. */
     default void setLEDs(LED led) {}

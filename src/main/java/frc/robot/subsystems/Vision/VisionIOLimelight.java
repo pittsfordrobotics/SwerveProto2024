@@ -20,10 +20,12 @@ public class VisionIOLimelight implements VisionIO {
 
     public VisionIOLimelight() {
         setLEDs(LED.OFF);
-        setPipeline(Pipelines.MID_RANGE);
+        setPipeline(Pipelines.Test);
     }
 
-    public void updateInputs(VisionIOInputs inputs) {
+    public void updateInputs(VisionIOInputs inputs, String limelightName) {
+        final NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
+
         NetworkTableEntry heartbeatEntry = limelight.getEntry("hb");
         NetworkTableEntry botposeEntry = DriverStation.getAlliance() == Alliance.Blue ? limelight.getEntry("botpose_wpiblue") : limelight.getEntry("botpose_wpired");
 
