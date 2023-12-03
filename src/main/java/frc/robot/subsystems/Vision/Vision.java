@@ -44,13 +44,12 @@ public class Vision extends SubsystemBase {
         FieldConstants.aprilTags.getTags().forEach((AprilTag tag) -> lastTagDetectionTimes.put(tag.ID, 0.0));
     }
 
-    // To add more cameras: Update the following two lines to include the camera.
+    // To add more cameras:
     // Update VisionConstants.java to include the new camera.
-
-    // Sets all inputs (add more if needed)
+    // Update the following two lines to include the camera.
     private final VisionIO.VisionIOInputs[] inputs = new VisionIO.VisionIOInputs[] { new VisionIO.VisionIOInputs() };
-    // Sets all camera names (add more if needed)
     private final String[] camNames = new String[] { VisionConstants.LIMELIGHT1_NAME };
+    
     private Pipelines pipeline = Pipelines.Test; // default pipeline
 
     @Override
@@ -60,7 +59,7 @@ public class Vision extends SubsystemBase {
             io[i].updateInputs(inputs[i], camNames[i]);
 
             // keeps the pipeline always the same
-            io[i].setPipeline(pipeline);
+            io[i].setPipeline(pipeline, camNames[i]);
         }
         List<Pose2d> allRobotPoses = new ArrayList<>();
 
@@ -77,10 +76,7 @@ public class Vision extends SubsystemBase {
                 Pose3d robotPose3d = new Pose3d(inputs[i].botXYZ[0], inputs[i].botXYZ[1], inputs[i].botXYZ[2],
                         new Rotation3d(inputs[i].botRPY[0], inputs[i].botRPY[1], inputs[i].botRPY[2]));
                 Pose2d robotPose = robotPose3d.toPose2d();
-                SmartDashboard.putNumber("Vision/Pose" + i + "/X", robotPose.getX());
-                SmartDashboard.putNumber("Vision/Pose" + i + "/Y", robotPose.getY());
-                SmartDashboard.putNumber("Vision/Pose" + i + "/Theta", robotPose.getRotation().getDegrees());
-                SmartDashboard.putNumber("Vision/Pose" + i + "/Timestamp", inputs[i].captureTimestamp);
+
 
                 // exit if off the field
                 if (robotPose3d.getX() < -VisionConstants.FIELD_BORDER_MARGIN
@@ -91,6 +87,13 @@ public class Vision extends SubsystemBase {
                         || robotPose3d.getZ() > VisionConstants.Z_MARGIN) {
                     continue;
                 }
+
+
+                SmartDashboard.putBoolean("Vision Not exited?", true);
+                SmartDashboard.putNumber("Vision/Pose" + i + "/X", robotPose.getX());
+                SmartDashboard.putNumber("Vision/Pose" + i + "/Y", robotPose.getY());
+                SmartDashboard.putNumber("Vision/Pose" + i + "/Theta", robotPose.getRotation().getDegrees());
+
 
                 // Get tag poses and update last detection times
                 List<Pose3d> tagPoses = new ArrayList<>();
@@ -120,8 +123,8 @@ public class Vision extends SubsystemBase {
                 // VisionConstants.THETA_STD_DEV_COEF to trust vision in general less
                 double xyStdDev = VisionConstants.XY_STD_DEV_COEF * Math.pow(avgDistance, 2.0) / tagPoses.size();
                 double thetaStdDev = VisionConstants.THETA_STD_DEV_COEF * Math.pow(avgDistance, 2.0) / tagPoses.size();
-                SmartDashboard.putNumber("Vision/XYstd", xyStdDev);
-                SmartDashboard.putNumber("Vision/ThetaStd", thetaStdDev);
+                // SmartDashboard.putNumber("Vision/XYstd", xyStdDev);
+                // SmartDashboard.putNumber("Vision/ThetaStd", thetaStdDev);
 
                 // Add vision data to swerve pose estimator
                 Swerve.getInstance().addVisionData(robotPose, inputs[i].captureTimestamp,
@@ -138,7 +141,7 @@ public class Vision extends SubsystemBase {
                 }
             }
         }
-        SmartDashboard.putNumber("Vision/NumPoses", allRobotPoses.size());
-        SmartDashboard.putNumberArray("Vision/NumTags", (Double[]) allRobotPoses.toArray());
+        // SmartDashboard.putNumber("Vision/NumPoses", allRobotPoses.size());
+        // SmartDashboard.putNumberArray("Vision/NumTags", (Double[]) allRobotPoses.toArray());
     }
 }

@@ -14,13 +14,15 @@ import edu.wpi.first.wpilibj.Timer;
 public class VisionIOLimelight implements VisionIO {
     public Pose3d lastPose = new Pose3d();
 
-    // I think this will be grabing the same network table for each limelight might have to chnage for 2 limelights
-    private final String limelightName = "";
-    private final NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
+    // This is how it was last year.
+    // I changed it so that each method takes a name parameter. So that multiple limelights is possible.
+    // I might be completely of base here, but I think this should work.
+    // private final String limelightName = "";
+    // private final NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
 
-    public VisionIOLimelight() {
-        setLEDs(LED.OFF);
-        setPipeline(Pipelines.Test);
+    public VisionIOLimelight(String CamName) {
+        setLEDs(LED.OFF, CamName);
+        setPipeline(Pipelines.Test, CamName);
     }
 
     public void updateInputs(VisionIOInputs inputs, String limelightName) {
@@ -49,17 +51,20 @@ public class VisionIOLimelight implements VisionIO {
     }
 
     @Override
-    public void setPipeline(Pipelines pipeline) {
+    public void setPipeline(Pipelines pipeline, String limelightName) {
+        NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
         limelight.getEntry("pipeline").setDouble(pipeline.getNum());
     }
 
     @Override
-    public void setCameraModes(CameraMode camera) {
+    public void setCameraModes(CameraMode camera, String limelightName) {
+        final NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
         limelight.getEntry("camMode").setDouble(camera.getNum());
     }
 
     @Override
-    public void setLEDs(LED led) {
+    public void setLEDs(LED led, String limelightName) {
+        final NetworkTable limelight = LimelightHelpers.getLimelightNTTable(limelightName);
         limelight.getEntry("ledMode").setDouble(led.getNum());
     }
 }

@@ -21,6 +21,8 @@ public interface VisionIO {
      * CLOSE_RANGE: has the highest FPS, but only has limited range
      * RETRO: uses the green lights
      */
+
+    
     enum Pipelines {
         Test(0), Led(1), LowLed(2), RETRO(3), CONE(4), CUBE(5);
 
@@ -66,13 +68,12 @@ public interface VisionIO {
     default void updateInputs(VisionIOInputs inputs, String CamName) {}
 
     /** Enabled or disabled vision LEDs. */
-    default void setLEDs(LED led) {}
+    default void setLEDs(LED led, String CamName) {}
 
     /** Enabled or disabled vision LEDs. */
-    default void setCameraModes(CameraMode mode) {}
+    default void setCameraModes(CameraMode mode, String CamName) {}
 
     /** Sets the pipeline number. */
-    default void setPipeline(Pipelines pipeline) {}
+    default void setPipeline(Pipelines pipeline, String CamName) {}
 
-    default void setname(String name) {}
 }

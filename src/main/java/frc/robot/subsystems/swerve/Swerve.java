@@ -90,7 +90,7 @@ public class Swerve extends SubsystemBase {
     poseEstimator.update(getRobotRelativeAngle(), modulePositions);
     SmartDashboard.putNumber("Robot X", getPose().getX());
     SmartDashboard.putNumber("Robot Y", getPose().getY());
-    SmartDashboard.putNumber("Robot Heading", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Robot Theta", getPose().getRotation().getDegrees());
    }
 
    /**Gets the robot's current orientation. Returns the CCW+ angle in a Rotation2d object. */
@@ -130,7 +130,7 @@ public class Swerve extends SubsystemBase {
     // Logging
     SmartDashboard.putNumber("Target Angular Velocity", targetAngularVelocity);
     SmartDashboard.putNumber("Target Angle", targetAngle.getDegrees());
-    SmartDashboard.putNumber("Robot Relative Angle", robotRelativeAngle.getDegrees());
+    SmartDashboard.putNumber("Robot Gyro Theta", robotRelativeAngle.getDegrees());
 
     // // Just RightJoystick Code but with PID
     SwerveTargetAngleVPID.enableContinuousInput(-Math.PI, Math.PI);
