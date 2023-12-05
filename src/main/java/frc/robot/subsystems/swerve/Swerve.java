@@ -88,9 +88,9 @@ public class Swerve extends SubsystemBase {
     
     // Update the pose estimator
     poseEstimator.update(getRobotRelativeAngle(), modulePositions);
-    SmartDashboard.putNumber("Robot X", getPose().getX());
-    SmartDashboard.putNumber("Robot Y", getPose().getY());
-    SmartDashboard.putNumber("Robot Theta", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Robot Pose X", getPose().getX());
+    SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
+    SmartDashboard.putNumber("Robot Pose Theta", getPose().getRotation().getDegrees());
    }
 
    /**Gets the robot's current orientation. Returns the CCW+ angle in a Rotation2d object. */

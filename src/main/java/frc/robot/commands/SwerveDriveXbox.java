@@ -28,13 +28,14 @@ public class SwerveDriveXbox extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerveDrive.zeroGyro();
+    // swerveDrive.zeroGyro();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   /* (non-Javadoc)
    * @see edu.wpi.first.wpilibj2.command.Command#execute()
    */
+  
   @Override
   public void execute() {
     double xAxis = MathUtil.applyDeadband(-driverController.getLeftY(), SwerveConstants.driverControllerLeftDeadband); // update all controller inputs, Xbox controller has different X and Y directions

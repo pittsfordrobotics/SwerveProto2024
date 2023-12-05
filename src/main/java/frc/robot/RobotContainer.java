@@ -10,6 +10,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Intake;
 import frc.robot.commands.SwerveDriveXbox;
 import frc.robot.commands.SwerveZeroWheelAngle;
+import frc.robot.commands.TurnUsingPose;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -56,7 +57,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     Intake intakeCommand = new Intake(m_endEffector);
     m_driverController.a().whileTrue(intakeCommand);
@@ -64,6 +64,10 @@ public class RobotContainer {
     // Calls the command ZeroGyro when the Startbutton on the drivers controller is pressed
     ZeroGyro zeroGyro = new ZeroGyro(m_swerveDrive);
     m_driverController.start().whileTrue(zeroGyro);
+
+    // Calls the command turnUsingPose when the rightbumper on the drivers controller is pressed
+    TurnUsingPose turnUsingPose = new TurnUsingPose(m_swerveDrive);
+    m_driverController.rightBumper().whileTrue(turnUsingPose);
  
   }
 
