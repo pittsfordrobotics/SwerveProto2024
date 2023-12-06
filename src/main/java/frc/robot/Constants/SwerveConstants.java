@@ -4,15 +4,30 @@
 
 package frc.robot.Constants;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Robot;
-import frc.robot.subsystems.swerve.SwerveModuleIO;
 /** Add your docs here. */
 public final class SwerveConstants {
+    ObjectMapper objectMapper = new ObjectMapper();
+    File swerveOffsetsFile = new File("SwerveOffsets.json");
+    static Map<String, Double> swerveOffsetsMap = new HashMap<String, Double>();
+    {
+    try {
+        swerveOffsetsMap = objectMapper.readValue(swerveOffsetsFile, new TypeReference<Map<String, Double>>(){});
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    }
+    
     
     public static final double driverControllerLeftDeadband = 0.1;
     public static final double driverControllerRightDeadband = 0.95;
@@ -69,10 +84,10 @@ public final class SwerveConstants {
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(MODULE_OFFSETS);
 
     // Measured module angles when using alignment tool
-    public static final Rotation2d FL_PURE_OFFSET = Rotation2d.fromDegrees(357.562);
-    public static final Rotation2d FR_PURE_OFFSET = Rotation2d.fromDegrees(177.386);
-    public static final Rotation2d BL_PURE_OFFSET = Rotation2d.fromDegrees(121.179);
-    public static final Rotation2d BR_PURE_OFFSET = Rotation2d.fromDegrees(162.630);
+    public static final Rotation2d FL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("FL_PURE_OFFSET"));
+    public static final Rotation2d FR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("FR_PURE_OFFSET"));
+    public static final Rotation2d BL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("BL_PURE_OFFSET"));
+    public static final Rotation2d BR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("BR_PURE_OFFSET"));
 
     // Add angles of offset based on mounting angle of modules
     public static final Rotation2d FL_OFFSET = FL_PURE_OFFSET.plus(Rotation2d.fromDegrees(-90));

@@ -31,7 +31,7 @@ public class Swerve extends SubsystemBase {
   // private final SwerveDrivePoseEstimator poseEstimator;
 
   // Initialize a PID controller for calculating the wanted angular velocity based on the desired angle
-  PIDController SwerveTargetAngleVPID = new PIDController(SwerveConstants.AngV_P, SwerveConstants.AngV_I, SwerveConstants.AngV_D);
+  PIDController SwerveTargetAnglePID = new PIDController(SwerveConstants.AngV_P, SwerveConstants.AngV_I, SwerveConstants.AngV_D);
 
   SwerveModuleState[] wantedModuleStates = new SwerveModuleState[4];
   private final SwerveDriveKinematics kinematics = SwerveConstants.DRIVE_KINEMATICS;
@@ -103,9 +103,9 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("Robot Relative Angle", robotRelativeAngle.getDegrees());
 
     // // Just RightJoystick Code but with PID
-    SwerveTargetAngleVPID.enableContinuousInput(-Math.PI, Math.PI);
-    SwerveTargetAngleVPID.setTolerance(1/120);
-    targetAngularVelocity = SwerveTargetAngleVPID.calculate(robotRelativeAngle.getRadians(), targetAngle.getRadians()); // Target angular velocity is a linear function of input, with a steep slope.
+    SwerveTargetAnglePID.enableContinuousInput(-Math.PI, Math.PI);
+    SwerveTargetAnglePID.setTolerance(1/120);
+    targetAngularVelocity = SwerveTargetAnglePID.calculate(robotRelativeAngle.getRadians(), targetAngle.getRadians()); // Target angular velocity is a linear function of input, with a steep slope.
     targetAngularVelocity = MathUtil.clamp(targetAngularVelocity, -SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND); // Clamp the angular velocity at the max allowed value.
 
     actualRobotRelativeChassisSpeeds = kinematics.toChassisSpeeds(actualStates);

@@ -53,12 +53,11 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     Intake intakeCommand = new Intake(m_endEffector);
-    SwerveZeroWheelAngle zeroWheelSpeedAngleCommand = new SwerveZeroWheelAngle(m_swerveDrive);
     m_driverController.a().whileTrue(intakeCommand);
 
-    // Calls the command ZeroGyro when the Startbutton on the drivers controller is pressed
+    // Calls the command ZeroGyro when the right bumper on the drivers controller is pressed
     ZeroGyro zeroGyro = new ZeroGyro(m_swerveDrive);
-    m_driverController.start().whileTrue(zeroGyro);
+    m_driverController.rightBumper().whileTrue(zeroGyro);
  
   }
 

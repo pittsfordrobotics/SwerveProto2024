@@ -40,7 +40,6 @@ public class SwerveModuleIO {
     public double driveTempCelsius = 0.0;
 
     public double steerAbsolutePositionRad = 0.0;
-    public double steerOffsetAbsolutePositionRad = 0.0;
     public double steerAbsoluteVelocityRadPerSec = 0.0;
     public double steerAppliedVolts = 0.0;
     public double steerCurrentAmps = 0.0;
@@ -117,11 +116,18 @@ public class SwerveModuleIO {
         driveTempCelsius = driveMotor.getMotorTemperature();
         
         steerAbsolutePositionRad = steerAbsoluteEncoder.getPosition();
-        steerOffsetAbsolutePositionRad = steerAbsoluteEncoder.getPosition();
         steerAbsoluteVelocityRadPerSec = steerAbsoluteEncoder.getVelocity();
         steerAppliedVolts = steerMotor.getAppliedOutput() * driveMotor.getBusVoltage();
         steerCurrentAmps = steerMotor.getOutputCurrent();
         steerTempCelsius = steerMotor.getMotorTemperature();
+    }
+    /**
+     * Updates inputs and returns the current swerve module steering angle
+     * @return steering angle of the swerve module, in degrees from 0-360
+     */
+    public double getCurrentAngleDeg() {
+        updateInputs();
+        return MathUtil.inputModulus(Math.toDegrees(steerAbsolutePositionRad), 0, 360);
     }
     /** <p>Drives the swerve drive based on desired swerve module state.</p>
      * <p>If using closed loop PID, set isOpenLoop to false.</p>
