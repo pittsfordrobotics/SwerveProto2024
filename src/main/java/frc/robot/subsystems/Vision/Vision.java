@@ -21,6 +21,7 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -74,11 +75,22 @@ public class Vision extends SubsystemBase {
 
                 // Gets robot pose from the current camera
                 Pose3d robotPose3d = new Pose3d(inputs[i].botXYZ[0], inputs[i].botXYZ[1], inputs[i].botXYZ[2],
-                        new Rotation3d(inputs[i].botRPY[0], inputs[i].botRPY[1], inputs[i].botRPY[2]));
+                    new Rotation3d(
+                        Math.toRadians(inputs[i].botRPY[0]),
+                        Math.toRadians(inputs[i].botRPY[1]),
+                        Math.toRadians(inputs[i].botRPY[2])
+                    )
+                );
                 Pose2d robotPose = robotPose3d.toPose2d();
+                //Pose2d robotPose = new Pose2d(inputs[i].botXYZ[0], inputs[i].botXYZ[1],  Rotation2d.fromDegrees(inputs[i].botRPY[2]));
+
+                SmartDashboard.putBoolean("Vision Not exited?", true);
+                SmartDashboard.putNumber("Vision/Pose" + i + "/X", robotPose.getX());
+                SmartDashboard.putNumber("Vision/Pose" + i + "/Y", robotPose.getY());
+                SmartDashboard.putNumber("Vision/Pose" + i + "/Theta", robotPose.getRotation().getDegrees());
 
 
-                // exit if off the field
+                // exit if off the field (fix later)
                 if (robotPose3d.getX() < -VisionConstants.FIELD_BORDER_MARGIN
                         || robotPose3d.getX() > FieldConstants.fieldLength + VisionConstants.FIELD_BORDER_MARGIN
                         || robotPose3d.getY() < -VisionConstants.FIELD_BORDER_MARGIN
@@ -89,10 +101,7 @@ public class Vision extends SubsystemBase {
                 }
 
 
-                SmartDashboard.putBoolean("Vision Not exited?", true);
-                SmartDashboard.putNumber("Vision/Pose" + i + "/X", robotPose.getX());
-                SmartDashboard.putNumber("Vision/Pose" + i + "/Y", robotPose.getY());
-                SmartDashboard.putNumber("Vision/Pose" + i + "/Theta", robotPose.getRotation().getDegrees());
+
 
 
                 // Get tag poses and update last detection times

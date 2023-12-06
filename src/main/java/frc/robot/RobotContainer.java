@@ -14,6 +14,7 @@ import frc.robot.commands.TurnUsingPose;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Vision.Vision;
 // import frc.robot.subsystems.Vision.Vision;
 import frc.robot.subsystems.swerve.Swerve;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,7 +32,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final EndEffector m_endEffector = new EndEffector(); 
   private final Swerve m_swerveDrive = Swerve.getInstance();
-  // private final Vision vision = Vision.getInstance();
+  private final Vision vision = Vision.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =

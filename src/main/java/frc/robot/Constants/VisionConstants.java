@@ -17,14 +17,13 @@ public final class VisionConstants {
     public final static VisionIO LIMELIGHT2;
     public final static String LIMELIGHT2_NAME = "limelight-two";
     static {
-        LIMELIGHT1 = new VisionIOLimelight(LIMELIGHT1_NAME) {};
-        LIMELIGHT2 = new VisionIOLimelight(LIMELIGHT2_NAME) {};
+        LIMELIGHT1 = new VisionIOLimelight(LIMELIGHT1_NAME);
+        LIMELIGHT2 = new VisionIOLimelight(LIMELIGHT2_NAME);
     }
+
     public static final double FIELD_BORDER_MARGIN = 0.5;
     public static final double Z_MARGIN = 0.75;
     public static final double XY_STD_DEV_COEF = 0.01;
     public static final double THETA_STD_DEV_COEF = 0.01;
     public static final double TARGET_LOG_SECONDS = 0.1;
-
-
 }
