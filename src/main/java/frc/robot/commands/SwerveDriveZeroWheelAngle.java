@@ -7,10 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.swerve.Swerve;
 
-public class SwerveZeroWheelAngle extends CommandBase {
+public class SwerveDriveZeroWheelAngle extends CommandBase {
   private Swerve swerveDrive;
   /** A diagnostic command that puts all the swerve modules at 0 speed and angle. */
-  public SwerveZeroWheelAngle(Swerve swerveDrive) {
+  public SwerveDriveZeroWheelAngle(Swerve swerveDrive) {
     addRequirements(swerveDrive);
     this.swerveDrive = swerveDrive;
   }

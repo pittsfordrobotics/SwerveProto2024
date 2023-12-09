@@ -9,10 +9,13 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.DisabledInstantCommand;
 import frc.robot.commands.SwerveDriveXbox;
+import frc.robot.commands.SwerveSetZeroOffsets;
 import edu.wpi.first.math.controller.PIDController;
 
 public class Swerve extends SubsystemBase {
@@ -58,6 +61,8 @@ public class Swerve extends SubsystemBase {
     }
     // TODO: figure out what the pose estimator is used for.
     // poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRobotRelativeAngle(), modulePositions, new Pose2d(), VecBuilder.fill(0.003, 0.003, 0.0002), VecBuilder.fill(0.9, 0.9, 0.9));
+  
+    Shuffleboard.getTab("CONFIG").add("Record Wheel Offsets", new SwerveSetZeroOffsets(this));
   }
   @Override
   public void periodic() {
