@@ -7,10 +7,11 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.GoToPointUsingPose_VisionProof;
 import frc.robot.commands.Intake;
 import frc.robot.commands.SwerveDriveXbox;
 import frc.robot.commands.SwerveZeroWheelAngle;
-import frc.robot.commands.TurnUsingPose;
+import frc.robot.commands.TurnUsingPose_VisionProof;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -67,9 +68,12 @@ public class RobotContainer {
     m_driverController.start().whileTrue(zeroGyro);
 
     // Calls the command turnUsingPose when the rightbumper on the drivers controller is pressed
-    TurnUsingPose turnUsingPose = new TurnUsingPose(m_swerveDrive);
+    TurnUsingPose_VisionProof turnUsingPose = new TurnUsingPose_VisionProof(m_swerveDrive);
     m_driverController.rightBumper().whileTrue(turnUsingPose);
  
+    // Calls the command goToPointUsingPose when the b button on the drivers controller is pressed
+    GoToPointUsingPose_VisionProof goToPointUsingPose = new GoToPointUsingPose_VisionProof(m_swerveDrive);
+    m_driverController.b().whileTrue(goToPointUsingPose);
   }
 
   /**

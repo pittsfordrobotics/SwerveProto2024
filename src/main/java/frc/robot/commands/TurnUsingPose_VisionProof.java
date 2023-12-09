@@ -5,9 +5,11 @@
 package frc.robot.commands;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,7 +23,7 @@ import frc.robot.subsystems.swerve.Swerve;
 // when a button is held the robot's target angle will be pointing at a specified point on the field
 
 
-public class TurnUsingPose extends CommandBase {
+public class TurnUsingPose_VisionProof extends CommandBase {
   private Swerve swervedrive;
   private CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private double rotateX;
@@ -29,7 +31,7 @@ public class TurnUsingPose extends CommandBase {
   private Rotation2d targetAngle;
 
   /** Creates a new TurnUsingPose. */
-  public TurnUsingPose(Swerve swervedrive) {
+  public TurnUsingPose_VisionProof(Swerve swervedrive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swervedrive);
     this.swervedrive = swervedrive;
@@ -48,8 +50,10 @@ public class TurnUsingPose extends CommandBase {
     Double robotx = swervedrive.getPose().getX();
     Double roboty = swervedrive.getPose().getY();
 
-    Double targetx = 1.0;
-    Double targety = 1.0;  
+    // Double targetx = 1.0;
+    Optional<Pose3d> pointofintrest = FieldConstants.aprilTags.getTagPose(2);
+    Double targetx = pointofintrest.get().getX();
+    Double targety = pointofintrest.get().getY();
 
     Double xdiff = robotx - targetx;
     Double ydiff = roboty - targety;
@@ -60,15 +64,12 @@ public class TurnUsingPose extends CommandBase {
      * 0 theta is to the right of the field (pointing towards the opposing alliance's grid)
      * theta increases as you go counter clockwise
      */
-
     // Should work as long as the gyro is zeroed to the right
-      targetAngle = Rotation2d.fromRadians(Math.atan2(ydiff, xdiff) + Math.PI);
-  
+    targetAngle = Rotation2d.fromRadians(Math.atan2(ydiff, xdiff) + Math.PI);
 
     swervedrive.updateSwerveModuleStates(xAxis, yAxis, targetAngle);
 
     swervedrive.drive();
-
   }
 
   // Called once the command ends or is interrupted.

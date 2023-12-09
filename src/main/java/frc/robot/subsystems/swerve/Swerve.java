@@ -7,7 +7,10 @@ package frc.robot.subsystems.swerve;
 import java.nio.file.attribute.PosixFileAttributes;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -72,6 +75,26 @@ public class Swerve extends SubsystemBase {
       modulePositions[i] = new SwerveModulePosition(moduleIO[i].drivePositionMeters, Rotation2d.fromRadians(moduleIO[i].steerOffsetAbsolutePositionRad));
       lastModuleStates[i] = new SwerveModuleState();
     }
+
+    // Configure the AutoBuilder last
+    AutoBuilder.configureHolonomic(
+        this::getPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::drive_path_planner, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+            4.5, // Max module speed, in m/s
+            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig() // Default path replanning config. See the API for the options here
+        ),
+        this // Reference to this subsystem to set requirements
+    );
+
+
+
+
     poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRobotRelativeAngle(), modulePositions, new Pose2d(), VecBuilder.fill(0.003, 0.003, 0.0002), VecBuilder.fill(0.9, 0.9, 0.9));
   }
 
@@ -117,12 +140,7 @@ public class Swerve extends SubsystemBase {
     // Set X and Y speeds based on max motor RPM.
     double targetSpeedX = xAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
     double targetSpeedY = yAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
-    SwerveModuleState[] actualStates = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      moduleIO[i].updateInputs();
-      actualStates[i] = new SwerveModuleState(moduleIO[i].driveVelocityMetersPerSec, Rotation2d.fromRadians(moduleIO[i].steerAbsolutePositionRad));
-    }
-    robotRelativeAngle = getRobotRelativeAngle();
+    SwerveModuleState[] actualStates = getactualStates();
 
     // New code
     // Decides how to calculate the target angular velocity based on the controller inputs (2 variable booleons and a constant boolean)
@@ -164,6 +182,36 @@ public class Swerve extends SubsystemBase {
       moduleIO[i].drive(wantedModuleStates[i], false);
     }
   }
+
+  public void drive_path_planner(ChassisSpeeds RobotRelativeChassisSpeeds) {
+    SwerveModuleState[] actualStates = getactualStates();
+
+    wantedModuleStates = kinematics.toSwerveModuleStates(RobotRelativeChassisSpeeds);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(wantedModuleStates,
+        SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND);
+    for (int i = 0; i < 4; i++) {
+      wantedModuleStates[i] = SwerveModuleState.optimize(wantedModuleStates[i], actualStates[i].angle);
+    }
+
+    drive();
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    SwerveModuleState[] actualStates = getactualStates();
+    actualRobotRelativeChassisSpeeds = kinematics.toChassisSpeeds(actualStates);
+    return actualRobotRelativeChassisSpeeds;
+  }
+
+public SwerveModuleState[] getactualStates() {
+  SwerveModuleState[] actualStates = new SwerveModuleState[4];
+  for (int i = 0; i < 4; i++) {
+    moduleIO[i].updateInputs();
+    actualStates[i] = new SwerveModuleState(moduleIO[i].driveVelocityMetersPerSec,
+        Rotation2d.fromRadians(moduleIO[i].steerAbsolutePositionRad));
+  }
+  return actualStates;
+}
 
   /** Reset the pigeon angle */
   public void zeroGyro() {
