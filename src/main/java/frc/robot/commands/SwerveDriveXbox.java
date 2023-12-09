@@ -18,8 +18,6 @@ public class SwerveDriveXbox extends CommandBase {
   private CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private double rotateX;
   private double rotateY;
-  private double lastRotateX;
-  private double lastRotateY;
   /** Creates a new SwerveDriveXbox. */
   public SwerveDriveXbox(Swerve swerveDrive) {
     addRequirements(swerveDrive);
@@ -30,13 +28,14 @@ public class SwerveDriveXbox extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerveDrive.zeroGyro();
+    // swerveDrive.zeroGyro();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   /* (non-Javadoc)
    * @see edu.wpi.first.wpilibj2.command.Command#execute()
    */
+  
   @Override
   public void execute() {
     double xAxis = MathUtil.applyDeadband(-driverController.getLeftY(), SwerveConstants.driverControllerLeftDeadband); // update all controller inputs, Xbox controller has different X and Y directions
@@ -44,20 +43,14 @@ public class SwerveDriveXbox extends CommandBase {
     rotateX = -driverController.getRightY();
     rotateY = -driverController.getRightX();
     double radius = MathUtil.applyDeadband(Math.sqrt(Math.pow(rotateX, 2) + Math.pow(rotateY, 2)), SwerveConstants.driverControllerRightDeadband);
-    if(radius == 0){ //If no input, replace current input with last values
-      rotateX = lastRotateX;
-      rotateY = lastRotateY;
-    }else{ //If there is an input, replace the stored values with the new ones
-      lastRotateX = rotateX;
-      lastRotateY = rotateY;
+    if(radius == 0){ //If in deadband, don't update the target direction
+      swerveDrive.updateSwerveModuleStates(xAxis, yAxis);
+    }else{
+      Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan2(rotateY, rotateX));
+      swerveDrive.updateSwerveModuleStates(xAxis, yAxis, targetAngle);
     }
 
-    swerveDrive.updateSwerveModuleStates(xAxis, yAxis, rotateX, rotateY); // get desired swerve module states and drive
     swerveDrive.drive();
-
-    if(driverController.x().getAsBoolean()) { // If X button is pressed, reset gyro heading
-      swerveDrive.zeroGyro();
-    }
     
   }
 
