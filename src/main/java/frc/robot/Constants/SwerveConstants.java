@@ -18,7 +18,7 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public final class SwerveConstants {
     ObjectMapper objectMapper = new ObjectMapper();
-    File swerveOffsetsFile = new File("SwerveOffsets.json");
+    File swerveOffsetsFile = new File("/temp/SwerveOffsets.json");
     static Map<String, Double> swerveOffsetsMap = new HashMap<String, Double>();
     {
     try {
@@ -84,10 +84,10 @@ public final class SwerveConstants {
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(MODULE_OFFSETS);
 
     // Measured module angles when using alignment tool
-    public static final Rotation2d FL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("FL_PURE_OFFSET"));
-    public static final Rotation2d FR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("FR_PURE_OFFSET"));
-    public static final Rotation2d BL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("BL_PURE_OFFSET"));
-    public static final Rotation2d BR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.get("BR_PURE_OFFSET"));
+    public static final Rotation2d FL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.getOrDefault("FL_PURE_OFFSET", 0.0));
+    public static final Rotation2d FR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.getOrDefault("FR_PURE_OFFSET", 0.0));
+    public static final Rotation2d BL_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.getOrDefault("BL_PURE_OFFSET", 0.0));
+    public static final Rotation2d BR_PURE_OFFSET = Rotation2d.fromDegrees(swerveOffsetsMap.getOrDefault("BR_PURE_OFFSET", 0.0));
 
     // Add angles of offset based on mounting angle of modules
     public static final Rotation2d FL_OFFSET = FL_PURE_OFFSET.plus(Rotation2d.fromDegrees(-90));

@@ -31,7 +31,7 @@ public class SwerveSetZeroOffsets extends CommandBase {
   public void initialize() {
     // Open the JSON file containing swerve module offsets
     ObjectMapper objectMapper = new ObjectMapper();
-    File swerveOffsetsFile = new File("../Constants/SwerveOffsets.json");
+    File swerveOffsetsFile = new File("/temp/SwerveOffsets.json");
     Map<String, Double> swerveOffsetsMap = new HashMap<String, Double>();
     
 
