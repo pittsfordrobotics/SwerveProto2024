@@ -51,12 +51,12 @@ public class TurnUsingPose_VisionProof extends CommandBase {
     Double roboty = swervedrive.getPose().getY();
 
     // Double targetx = 1.0;
-    Optional<Pose3d> pointofintrest = FieldConstants.aprilTags.getTagPose(2);
-    Double targetx = pointofintrest.get().getX();
-    Double targety = pointofintrest.get().getY();
+    Optional<Pose3d> pointofinterest = FieldConstants.aprilTags.getTagPose(2);
+    Double targetx = pointofinterest.get().getX();
+    Double targety = pointofinterest.get().getY();
 
-    Double xdiff = robotx - targetx;
-    Double ydiff = roboty - targety;
+    Double xdiff = targetx - robotx;
+    Double ydiff = targety - roboty;
 
     /*My understanding of the field system:
      * 0,0,0 is the "bottom left" corner of the field with the robots alliance grid being on the bottom left.

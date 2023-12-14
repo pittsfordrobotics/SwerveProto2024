@@ -81,6 +81,7 @@ public class Vision extends SubsystemBase {
                         Math.toRadians(inputs[i].botRPY[2])
                     )
                 );
+
                 Pose2d robotPose = robotPose3d.toPose2d();
                 //Pose2d robotPose = new Pose2d(inputs[i].botXYZ[0], inputs[i].botXYZ[1],  Rotation2d.fromDegrees(inputs[i].botRPY[2]));
 
@@ -99,10 +100,6 @@ public class Vision extends SubsystemBase {
                         || robotPose3d.getZ() > VisionConstants.Z_MARGIN) {
                     continue;
                 }
-
-
-
-
 
                 // Get tag poses and update last detection times
                 List<Pose3d> tagPoses = new ArrayList<>();

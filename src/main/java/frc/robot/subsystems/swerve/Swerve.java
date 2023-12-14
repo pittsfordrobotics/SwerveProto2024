@@ -77,20 +77,20 @@ public class Swerve extends SubsystemBase {
     }
 
     // Configure the AutoBuilder last
-    AutoBuilder.configureHolonomic(
-        this::getPose, // Robot pose supplier
-        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::drive_path_planner, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options here
-        ),
-        this // Reference to this subsystem to set requirements
-    );
+    // AutoBuilder.configureHolonomic(
+    //     this::getPose, // Robot pose supplier
+    //     this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+    //     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     this::drive_path_planner, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    //     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+    //         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+    //         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+    //         4.5, // Max module speed, in m/s
+    //         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+    //         new ReplanningConfig() // Default path replanning config. See the API for the options here
+    //     ),
+    //     this // Reference to this subsystem to set requirements
+    // );
 
 
 
@@ -137,6 +137,7 @@ public class Swerve extends SubsystemBase {
 
 
   public void updateSwerveModuleStates(double xAxis, double yAxis) {
+    robotRelativeAngle = getRobotRelativeAngle();
     // Set X and Y speeds based on max motor RPM.
     double targetSpeedX = xAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
     double targetSpeedY = yAxis * SwerveConstants.MAX_LINEAR_VELOCITY_METERS_PER_SECOND;

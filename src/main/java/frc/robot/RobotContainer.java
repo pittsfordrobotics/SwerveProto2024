@@ -44,8 +44,10 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     m_swerveDrive.setDefaultCommand(new SwerveDriveXbox(m_swerveDrive));
-    ZeroGyro zeroGyro = new ZeroGyro(m_swerveDrive);
-    zeroGyro.schedule();
+
+    // // zeros gyro on init
+    // ZeroGyro zeroGyro = new ZeroGyro(m_swerveDrive);
+    // zeroGyro.schedule();
   }
 
   /**
