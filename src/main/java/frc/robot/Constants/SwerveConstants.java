@@ -96,19 +96,18 @@ public final class SwerveConstants {
     public static final Rotation2d BR_OFFSET = BR_PURE_OFFSET.plus(Rotation2d.fromDegrees(-270));
     
     // controlling module wheel speed
-    // read this later: https://github.com/Team364/BaseFalconSwerve
     public static final double MODULE_DRIVE_P = 0.1;
     public static final double MODULE_DRIVE_I = 0;
     public static final double MODULE_DRIVE_D = 0;
 
-    // feedforward for module from SysID
-    public static final double MODULE_DRIVE_S = 0;
-    public static final double MODULE_DRIVE_V = 0;
-    public static final double MODULE_DRIVE_A = 0;
-    public static final double MODULE_DRIVE_FF = 1 / MAX_LINEAR_VELOCITY_METERS_PER_SECOND;
+    // // feedforward for module from SysID
+    // public static final double MODULE_DRIVE_S = 0;
+    // public static final double MODULE_DRIVE_V = 0;
+    // public static final double MODULE_DRIVE_A = 0;
+    public static final double MODULE_DRIVE_FF = 1 / MAX_LINEAR_VELOCITY_METERS_PER_SECOND; // feedforward for drive motors
 
-    // controlling module position / angle
-    public static final double MODULE_STEER_P = 2;
+    // controlling module angle
+    public static final double MODULE_STEER_P = 2.5;
     public static final double MODULE_STEER_I = 0;
     public static final double MODULE_STEER_D = 0;
     //public static final double MODULE_STEER_FF_OL = Robot.isReal() ? 0.6 : 0.27;
@@ -120,10 +119,10 @@ public final class SwerveConstants {
 
     public static final double MODULE_ROTATION_RATE_LIMIT = 10; // max allowed rotation rate of swerve in radians per second
     
-    // New PID values for Anguler Velocity
-    public static final double AngV_P = 10;
-    public static final double AngV_I = 0;
-    public static final double AngV_D = 0;
+    // New PID values for robot angle
+    public static final double ROBOT_ANG_P = 10;
+    public static final double ROBOT_ANG_I = 0;
+    public static final double ROBOT_ANG_D = 0;
 
     // Determines how the swerve turns (True = Charged Up way, False = New(and better) way)
     public static final boolean TurnWithRightStickX = false;

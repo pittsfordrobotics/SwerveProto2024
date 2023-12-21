@@ -34,7 +34,7 @@ public class Swerve extends SubsystemBase {
   // private final SwerveDrivePoseEstimator poseEstimator;
 
   // Initialize a PID controller for calculating the wanted angular velocity based on the desired angle
-  PIDController SwerveTargetAnglePID = new PIDController(SwerveConstants.AngV_P, SwerveConstants.AngV_I, SwerveConstants.AngV_D);
+  PIDController SwerveTargetAnglePID = new PIDController(SwerveConstants.ROBOT_ANG_P, SwerveConstants.ROBOT_ANG_I, SwerveConstants.ROBOT_ANG_D);
 
   SwerveModuleState[] wantedModuleStates = new SwerveModuleState[4];
   private final SwerveDriveKinematics kinematics = SwerveConstants.DRIVE_KINEMATICS;
